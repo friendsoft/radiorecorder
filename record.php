@@ -19,26 +19,29 @@ class Radiorecorder {
      * config (should be constants when used this way, but shall be replaced by injections)
      */
     protected $stationsFile = __DIR__.'/config/stations';
-    protected $stationsDistFile = __DIR__.'/config/stations.dist';
+    protected $stationsDistDir = __DIR__.'/config/stations.dist';
     protected $broadcastsFile = __DIR__.'/config/broadcasts';
-    protected $broadcastsDistFile = __DIR__.'/config/broadcasts.dist';
+    protected $broadcastsDistDir = __DIR__.'/config/broadcasts.dist';
     protected $recordsFile = __DIR__.'/config/record';
-    protected $recordsDistFile = __DIR__.'/config/record.dist';
+    protected $recordsDistDir = __DIR__.'/config/record.dist';
     protected $recordFileNamePattern = '/data/media/Musik/radiorecorder_dev/%STATION%/%STATION%--%BROADCASTNAME%--%YEAR%-%MONTH%-%DAY%.%FORMAT%';
 
     protected $year; // current year
     protected $week; // current week
-    protected $stations;
-    protected $broadcasts;
-    protected $requests;
+    protected $stations = array(); // stations by slug with name, url and optional comment
+    protected $broadcasts = array();
+    protected $records = array();
     protected $program; // array of records, associated by next due date: date => array(records)
 
     public function __construct() {
         $this->year = date('Y');
         $this->week = date('W');
-        $this->stations = array_merge($this->parseStations($this->stationsDistFile), $this->parseStations($this->stationsFile));
-        $this->broadcasts = array_merge($this->parseBroadcasts($this->broadcastsDistFile), $this->parseBroadcasts($this->broadcastsFile));
-        $this->requests = array_merge($this->parseRecords($this->recordsDistFile), $this->parseRecords($this->recordsFile));
+        $this->parseStations($this->stationsDistDir);
+        $this->parseStations($this->stationsFile);
+        $this->parseBroadcasts($this->broadcastsDistDir);
+        $this->parseBroadcasts($this->broadcastsFile);
+        $this->parseRecords($this->recordsDistDir);
+        $this->parseRecords($this->recordsFile);
     }
 
     public function info($message) {
@@ -54,14 +57,34 @@ class Radiorecorder {
     }
 
     /**
-     * parse station details from stations file
-     * (can be done several times; with global files read in first and local ones last to overwrite URLs)
+     * call a method recursively on each (sub)directory found
      *
-     * @param string $stationsFile (path)
-     * @return array (stations by slug with name, url and optional comment)
+     * @param string $method method name (of this class)
+     * @param string $fileOrDir path to file or directory
+     */
+    protected function callDirsRecursively($method, $fileOrDir) {
+        if (!is_dir($fileOrDir)) {
+            return;
+        }
+        $dirIterator = new \DirectoryIterator($fileOrDir);
+        foreach ($dirIterator as $file) {
+            if ($file->isDot() || $file->getExtension() /* ignore *.swp etc. */) {
+                continue;
+            }
+            $this->$method($file->getPathname());
+        }
+    }
+
+    /**
+     * parse station details from stations file
+     * (can be done several times; with global files read in first and local
+     *  ones last to overwrite URLs)
+     *
+     * @param string $stationsFile (path, may be a directory, too)
+     * @return Radiorecorder
      */
     protected function parseStations($stationsFile) {
-        $stations = array();
+        $this->callDirsRecursively('parseStations', $stationsFile);
         $entries = $this->getFileEntries($stationsFile);
         foreach ($entries as $entry) {
             if (!$entry || 0 === strpos($entry, '#')) {
@@ -73,30 +96,29 @@ class Radiorecorder {
             $rest = explode('#', $parts[2]);
             $url = trim($rest[0]);
             $comment = isset($rest[1]) ? trim($rest[1]) : '';
-            $stations[$slug] = array('name' => $name, 'url' => $url, 'comment' => $comment);
+            $this->stations[$slug] = array('name' => $name, 'url' => $url, 'comment' => $comment);
         }
+        ksort($this->stations);
 
-        return $stations;
+        return $this;
     }
 
     /**
      * parse broadcasts from broadcasts file
-     * (can be done several times; with global files read in first and local ones last to overwrite details)
+     * (can be done several times; with global files read in first and local
+     *  ones last to overwrite details)
      *
-     * @param string $broadcastsFile (path)
-     * @return array
+     * @param string $broadcastsFile (path, may be a directory, too)
+     * @return Radiorecorder
      */
     protected function parseBroadcasts($broadcastsFile) {
-        //var_dump('broadcast file: ', $broadcastsFile);
-        $broadcasts = array();
+        $this->callDirsRecursively('parseBroadcasts', $broadcastsFile);
         $entries = $this->getFileEntries($broadcastsFile);
-        //var_dump('entries:', $entries);
         foreach ($entries as $entry) {
             if (!$entry || 0 === strpos($entry, '#')) {
                 continue;
             }
             $parts = explode('"', $entry);
-            //var_dump('parts:', $parts);
             $preNameParts = explode(' ', preg_replace('/\s+/', ' ', trim($parts[0])));
             $postNameParts = explode(' ', preg_replace('/\s+/', ' ', trim($parts[2])));
 
@@ -149,13 +171,12 @@ class Radiorecorder {
 
             $cron['weeks'] = $weeks;
 
-
             // BROADCAST: ADD CRON DETAILS
-            if (isset($broadcasts[$station][$broadcast])) {
-                $broadcasts[$station][$broadcast]['cron'][] = $cron;
+            if (isset($this->broadcasts[$station][$broadcast])) {
+                $this->broadcasts[$station][$broadcast]['cron'][] = $cron;
             }
             else {
-                $broadcasts[$station][$broadcast] = array( // create new broadcast
+                $this->broadcasts[$station][$broadcast] = array( // create new broadcast
                     'name' => $parts[1],
                     'cron' => array($cron),
                     'minutes' => $preNameParts[9],
@@ -167,11 +188,17 @@ class Radiorecorder {
         }
 
 
-        return $broadcasts;
+        return $this;
     }
 
+    /**
+     * parse records to be scheduled
+     *
+     * @param string $recordsFile (path to dir or file containing record selections)
+     * @return Radiorecorder
+     */
     protected function parseRecords($recordsFile) {
-        $records = array();
+        $this->callDirsRecursively('parseRecords', $recordsFile);
         $entries = $this->getFileEntries($recordsFile);
         foreach ($entries as $entry) {
             if (!$entry || 0 === strpos($entry, '#')) {
@@ -187,11 +214,11 @@ class Radiorecorder {
                 'comment' => $comment
             );
 
-            $records[] = $record;
+            $this->records[] = $record;
 
         }
 
-        return $records;
+        return $this;
 
     }
 
@@ -215,7 +242,7 @@ class Radiorecorder {
 
     public function processRecords() {
         // TODO cache that stuff
-        foreach ($this->requests as $request) {
+        foreach ($this->records as $request) {
             $record = array(
                 'station' => $this->stations[$request['station']],
                 'broadcast' => $this->broadcasts[$request['station']][$request['broadcast']],
