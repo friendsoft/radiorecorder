@@ -1,0 +1,11 @@
+*.bak
+*.log
+.*.sw[op]
+.DS_Store
+.idea
+.vim*
+composer.phar
+config/broadcasts
+config/record
+config/stations
+vendor

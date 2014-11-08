@@ -1,0 +1,7 @@
+{
+    "require": {
+        "mtdowling/cron-expression": "1.0.*",
+        "phansys/getid3": "2.1.*@dev",
+        "symfony/process": "2.6.*@dev"
+    }
+}
