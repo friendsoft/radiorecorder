@@ -19,12 +19,12 @@ class Radiorecorder {
      * config (should be constants when used this way, but shall be replaced by injections)
      */
     protected $stationsFile = __DIR__.'/config/stations';
-    protected $stationsDistDir = __DIR__.'/config/stations.dist';
+    protected $stationsDistDir = __DIR__.'/vendor/friendsoft/radiobroadcasts/stations.dist';
     protected $broadcastsFile = __DIR__.'/config/broadcasts';
-    protected $broadcastsDistDir = __DIR__.'/config/broadcasts.dist';
-    protected $recordsFile = __DIR__.'/config/record';
-    protected $recordsDistDir = __DIR__.'/config/record.dist';
-    protected $recordFileNamePattern = '/data/media/Musik/radiorecorder_dev/%STATION%/%STATION%--%BROADCASTNAME%--%YEAR%-%MONTH%-%DAY%.%FORMAT%';
+    protected $broadcastsDistDir = __DIR__.'/vendor/friendsoft/radiobroadcasts/broadcasts.dist';
+    public $recordsFile = __DIR__.'/config/record';
+    protected $recordsDistDir = __DIR__.'/vendor/friendsoft/radiobroadcasts/record.dist';
+    protected $recordFileNamePattern = '/data/media/Musik/radiorecorder_dev/%STATION%/%STATION%--%BROADCASTNAME%--%YEAR%-%MONTH%-%DAY%.%FORMAT%'; // TODO resolve using config file
 
     protected $year; // current year
     protected $week; // current week
@@ -181,7 +181,7 @@ class Radiorecorder {
                     'cron' => array($cron),
                     'minutes' => $preNameParts[9],
                     'tags' => explode(',', $postNameParts[0]),
-                    'url' => $postNameParts[1]
+                    'url' => isset($postNameParts[1]) ? $postNameParts[1] : ''
                 );
             }
 
@@ -331,6 +331,10 @@ class Radiorecorder {
             return;
         }
         $week = $week ?: $this->week;
+        if (!$this->program) {
+            $this->info('No program entries found.');
+            return $this;
+        }
         ksort($this->program);
         foreach ($this->program as $station => $records) {
             ksort($records);
@@ -339,22 +343,24 @@ class Radiorecorder {
                     if ($timeRecord['cron']['date']->format('W') !== $week) {
                         continue;
                     }
-                    echo
-                        $timeRecord['record']['station']['name'], ' – ',
-                        $timeRecord['record']['broadcast']['name'], ': ', PHP_EOL,
-                        $timeRecord['cron']['date']->format('D d/m/Y H:i'), ' (',
-                        $timeRecord['record']['broadcast']['minutes'], ' min)', PHP_EOL,
-                        $timeRecord['record']['broadcast']['url'], PHP_EOL,
-                        '#' . join(' #', $timeRecord['record']['broadcast']['tags']), PHP_EOL,
-                        PHP_EOL
-                    ;
+                    $this->info(
+                        $timeRecord['record']['station']['name'] . ' – ' .
+                        $timeRecord['record']['broadcast']['name'] . ': ' . PHP_EOL .
+                        $timeRecord['cron']['date']->format('D d/m/Y H:i') . ' (' .
+                        $timeRecord['record']['broadcast']['minutes'] . ' min)' . PHP_EOL .
+                        $timeRecord['record']['broadcast']['url'] . PHP_EOL .
+                        '#' . join(' #', $timeRecord['record']['broadcast']['tags']) . PHP_EOL
+                    );
                 }
             }
-            echo PHP_EOL;
+            $this->info(''); // just for linebreak
         }
     }
 }
 
 $radiorecorder = new Radiorecorder();
+if (!file_exists($radiorecorder->recordsFile)) {
+    throw new \InvalidArgumentException('Record file "' . $radiorecorder->recordsFile . '" not found – please create and refer a file like https://github.com/friendsoft/radiobroadcasts/blob/master/record.dist/record.dist, with un-commented lines of stations and broadcasts.');
+}
 $radiorecorder->processRecords(); // generate program, record broadcasts that are due
 $radiorecorder->printProgram();

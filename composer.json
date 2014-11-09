@@ -1,5 +1,14 @@
 {
+    "name": "friendsoft/radiorecorder",
+    "description": "Cron expression based radio broadcasts stream recorder and tagger",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:friendsoft/radiobroadcasts.git"
+        }
+    ],
     "require": {
+        "friendsoft/radiobroadcasts": "dev-master",
         "mtdowling/cron-expression": "1.0.*",
         "phansys/getid3": "2.1.*@dev",
         "symfony/process": "2.6.*@dev"

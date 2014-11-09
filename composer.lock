@@ -4,8 +4,30 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "611d1b50c53fb73c4c3891a4472816dd",
+    "hash": "8048ae00f2225e70fa5d8a2867a0ba11",
     "packages": [
+        {
+            "name": "friendsoft/radiobroadcasts",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/friendsoft/radiobroadcasts.git",
+                "reference": "9ca8cdd219bf8d0a751ff9527ad627459a63267e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/friendsoft/radiobroadcasts/zipball/9ca8cdd219bf8d0a751ff9527ad627459a63267e",
+                "reference": "9ca8cdd219bf8d0a751ff9527ad627459a63267e",
+                "shasum": ""
+            },
+            "type": "library",
+            "description": "A config collection of streaming radio stations and scheduled radio broadcasts, to be used for radio recording and analysing by any client.",
+            "support": {
+                "source": "https://github.com/friendsoft/radiobroadcasts/tree/master",
+                "issues": "https://github.com/friendsoft/radiobroadcasts/issues"
+            },
+            "time": "2014-11-09 13:58:21"
+        },
         {
             "name": "mtdowling/cron-expression",
             "version": "v1.0.3",
@@ -99,12 +121,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Process.git",
-                "reference": "2f0db541a7de08dbe5a4b55acfbaf8e3e6b029d9"
+                "reference": "dc88f75d1c07791e5733f90be747961dce26cf05"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Process/zipball/2f0db541a7de08dbe5a4b55acfbaf8e3e6b029d9",
-                "reference": "2f0db541a7de08dbe5a4b55acfbaf8e3e6b029d9",
+                "url": "https://api.github.com/repos/symfony/Process/zipball/dc88f75d1c07791e5733f90be747961dce26cf05",
+                "reference": "dc88f75d1c07791e5733f90be747961dce26cf05",
                 "shasum": ""
             },
             "require": {
@@ -137,13 +159,14 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "http://symfony.com",
-            "time": "2014-10-01 05:53:11"
+            "time": "2014-11-04 14:29:39"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "friendsoft/radiobroadcasts": 20,
         "phansys/getid3": 20,
         "symfony/process": 20
     },
