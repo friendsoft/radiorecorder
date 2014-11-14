@@ -4,7 +4,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "git@github.com:friendsoft/radiobroadcasts.git"
+            "url": "git@github.com:tqmz/radiobroadcasts.git"
         }
     ],
     "require": {

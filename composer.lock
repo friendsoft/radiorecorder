@@ -4,29 +4,28 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "8048ae00f2225e70fa5d8a2867a0ba11",
+    "hash": "b46d3f3a275c57826553c46595e7bf5b",
     "packages": [
         {
             "name": "friendsoft/radiobroadcasts",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/friendsoft/radiobroadcasts.git",
-                "reference": "9ca8cdd219bf8d0a751ff9527ad627459a63267e"
+                "url": "https://github.com/tqmz/radiobroadcasts.git",
+                "reference": "768744e06bb81d267c58e2ffc05eac639a04a542"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/friendsoft/radiobroadcasts/zipball/9ca8cdd219bf8d0a751ff9527ad627459a63267e",
-                "reference": "9ca8cdd219bf8d0a751ff9527ad627459a63267e",
+                "url": "https://api.github.com/repos/tqmz/radiobroadcasts/zipball/768744e06bb81d267c58e2ffc05eac639a04a542",
+                "reference": "768744e06bb81d267c58e2ffc05eac639a04a542",
                 "shasum": ""
             },
             "type": "library",
             "description": "A config collection of streaming radio stations and scheduled radio broadcasts, to be used for radio recording and analysing by any client.",
             "support": {
-                "source": "https://github.com/friendsoft/radiobroadcasts/tree/master",
-                "issues": "https://github.com/friendsoft/radiobroadcasts/issues"
+                "source": "https://github.com/tqmz/radiobroadcasts/tree/master"
             },
-            "time": "2014-11-09 13:58:21"
+            "time": "2014-11-14 23:43:59"
         },
         {
             "name": "mtdowling/cron-expression",
@@ -121,12 +120,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Process.git",
-                "reference": "dc88f75d1c07791e5733f90be747961dce26cf05"
+                "reference": "37721e1ac896c7886ea52659f4b0f446953180e0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Process/zipball/dc88f75d1c07791e5733f90be747961dce26cf05",
-                "reference": "dc88f75d1c07791e5733f90be747961dce26cf05",
+                "url": "https://api.github.com/repos/symfony/Process/zipball/37721e1ac896c7886ea52659f4b0f446953180e0",
+                "reference": "37721e1ac896c7886ea52659f4b0f446953180e0",
                 "shasum": ""
             },
             "require": {
@@ -135,7 +134,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.6-dev"
+                    "dev-master": "3.0-dev"
                 }
             },
             "autoload": {
@@ -159,7 +158,7 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "http://symfony.com",
-            "time": "2014-11-04 14:29:39"
+            "time": "2014-11-11 08:37:22"
         }
     ],
     "packages-dev": [],
