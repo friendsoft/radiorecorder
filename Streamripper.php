@@ -113,9 +113,10 @@ class Streamripper {
 
     protected function prepareDirectory($file) {
         $pathinfo = pathinfo($file);
-        @mkdir($pathinfo['dirname'], 0755, true);
+        if (!is_dir($pathinfo['dirname'])) {
+            mkdir($pathinfo['dirname'], 0755, true);
+        }
 
         return $this;
     }
 }
-
