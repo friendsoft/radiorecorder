@@ -8,6 +8,7 @@ use Symfony\Component\Process\Process;
  * Streamripper
  *
  * TODO check `which streamripper` etc. (tagging optional)
+ * TODO retrieve extension (named automatically) to process file
  */
 class Streamripper {
 
