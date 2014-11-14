@@ -24,7 +24,7 @@ class Radiorecorder {
     protected $broadcastsDistDir = __DIR__.'/vendor/friendsoft/radiobroadcasts/broadcasts.dist';
     public $recordsFile = __DIR__.'/config/record';
     protected $recordsDistDir = __DIR__.'/vendor/friendsoft/radiobroadcasts/record.dist';
-    protected $recordFileNamePattern = '/data/media/Musik/radiorecorder_dev/%STATION%/%STATION%--%BROADCASTNAME%--%YEAR%-%MONTH%-%DAY%.%FORMAT%'; // TODO resolve using config file
+    protected $recordFileNamePattern = '/data/media/Musik/radiorecorder/%STATION%/%STATION%--%BROADCASTNAME%--%YEAR%-%MONTH%-%DAY%.%FORMAT%'; // TODO resolve using config file
 
     protected $year; // current year
     protected $week; // current week
@@ -262,6 +262,9 @@ class Radiorecorder {
 
             $success = function($buffer) { /*echo '.'; */ };
             $failure = function($buffer) { echo 'ERROR: ' . $buffer; };
+
+            // TODO retrieve stream format, e. g. ogg/vorbis for mephisto976, tag accordingly
+            // http://stackoverflow.com/questions/23287341/how-to-get-mime-type-of-a-file-in-php-5-5/23287361#23287361
 
             $writer = new \GetId3\Write\Tags();
             $writer->tagformats = array('id3v2.3');
