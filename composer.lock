@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tqmz/radiobroadcasts.git",
-                "reference": "768744e06bb81d267c58e2ffc05eac639a04a542"
+                "reference": "0f8469ad7a15b2cd24c2215d9891956874218ab4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tqmz/radiobroadcasts/zipball/768744e06bb81d267c58e2ffc05eac639a04a542",
-                "reference": "768744e06bb81d267c58e2ffc05eac639a04a542",
+                "url": "https://api.github.com/repos/tqmz/radiobroadcasts/zipball/0f8469ad7a15b2cd24c2215d9891956874218ab4",
+                "reference": "0f8469ad7a15b2cd24c2215d9891956874218ab4",
                 "shasum": ""
             },
             "type": "library",
@@ -25,7 +25,7 @@
             "support": {
                 "source": "https://github.com/tqmz/radiobroadcasts/tree/master"
             },
-            "time": "2014-11-14 23:43:59"
+            "time": "2014-12-16 21:55:43"
         },
         {
             "name": "mtdowling/cron-expression",
@@ -115,17 +115,17 @@
         },
         {
             "name": "symfony/process",
-            "version": "dev-master",
+            "version": "2.6.x-dev",
             "target-dir": "Symfony/Component/Process",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Process.git",
-                "reference": "37721e1ac896c7886ea52659f4b0f446953180e0"
+                "reference": "10a896e667e48bc0b895baa83cb77abcb29c51b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Process/zipball/37721e1ac896c7886ea52659f4b0f446953180e0",
-                "reference": "37721e1ac896c7886ea52659f4b0f446953180e0",
+                "url": "https://api.github.com/repos/symfony/Process/zipball/10a896e667e48bc0b895baa83cb77abcb29c51b6",
+                "reference": "10a896e667e48bc0b895baa83cb77abcb29c51b6",
                 "shasum": ""
             },
             "require": {
@@ -134,7 +134,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.0-dev"
+                    "dev-master": "2.6-dev"
                 }
             },
             "autoload": {
@@ -158,7 +158,7 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "http://symfony.com",
-            "time": "2014-11-11 08:37:22"
+            "time": "2014-12-12 16:21:40"
         }
     ],
     "packages-dev": [],
