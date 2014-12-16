@@ -18,13 +18,13 @@ class Radiorecorder {
     /**
      * config (should be constants when used this way, but shall be replaced by injections)
      */
-    protected $stationsFile = __DIR__.'/config/stations';
-    protected $stationsDistDir = __DIR__.'/vendor/friendsoft/radiobroadcasts/stations.dist';
-    protected $broadcastsFile = __DIR__.'/config/broadcasts';
-    protected $broadcastsDistDir = __DIR__.'/vendor/friendsoft/radiobroadcasts/broadcasts.dist';
-    public $recordsFile = __DIR__.'/config/record';
-    protected $recordsDistDir = __DIR__.'/vendor/friendsoft/radiobroadcasts/record.dist';
-    protected $recordFileNamePattern = '/data/media/Musik/radiorecorder/%STATION%/%STATION%--%BROADCASTNAME%--%YEAR%-%MONTH%-%DAY%.%FORMAT%'; // TODO resolve using config file
+    protected $stationsFile;
+    protected $stationsDistDir;
+    protected $broadcastsFile;
+    protected $broadcastsDistDir;
+    public $recordsFile;
+    protected $recordsDistDir;
+    protected $recordFileNamePattern;
 
     protected $year; // current year
     protected $week; // current week
@@ -36,6 +36,13 @@ class Radiorecorder {
     public function __construct() {
         $this->year = date('Y');
         $this->week = date('W');
+        $this->stationsFile = __DIR__.'/config/stations';
+        $this->stationsDistDir = __DIR__.'/vendor/friendsoft/radiobroadcasts/stations.dist';
+        $this->broadcastsFile = __DIR__.'/config/broadcasts';
+        $this->broadcastsDistDir = __DIR__.'/vendor/friendsoft/radiobroadcasts/broadcasts.dist';
+        $this->recordsFile = __DIR__.'/config/record';
+        $this->recordsDistDir = __DIR__.'/vendor/friendsoft/radiobroadcasts/record.dist';
+        $this->recordFileNamePattern = '/data/media/Musik/radiorecorder/%STATION%/%STATION%--%BROADCASTNAME%--%YEAR%-%MONTH%-%DAY%.%FORMAT%'; // TODO resolve using config file
         $this->parseStations($this->stationsDistDir);
         $this->parseStations($this->stationsFile);
         $this->parseBroadcasts($this->broadcastsDistDir);
