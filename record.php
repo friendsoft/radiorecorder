@@ -11,6 +11,9 @@ require_once(__DIR__.'/Streamripper.php'); // TODO resolve via component (use as
  * Radiorecorder
  *
  * TODO add year to crons (by expression or by file names)
+ * TODO each hour update symlink dirs:
+ *  – by time: 'current week', 'last week', 'current month' etc., using separate component
+ *  – by tags: 'tags', with subdirs for each tag
  *
  */
 class Radiorecorder {
@@ -141,39 +144,63 @@ class Radiorecorder {
                     'dow' => $preNameParts[6],
                     'year' => '*' //$preNameParts[7],
             );
-            $cronExpression = \Cron\CronExpression::factory(join(' ', $cron));
 
             /* CRON: CUSTOM PARTS */
             /* Weeks */
             /* TODO extend CronExpression to handle that */
-            list($weekInterval, $weekRemainder) = sscanf($preNameParts[8], '%%%d=%d');
-            $weeks = array(
-                'expression' => $preNameParts[8],
-                'interval' => $weekInterval,
-                'remainder' => $weekRemainder,
-                'matches' => $this->week % $weekInterval === $weekRemainder
-            );
+            /* week of year (woy) */
+            $weeks = array();
+            if (strpos($preNameParts[8], '=')) {
+                list($weekInterval, $weekRemainder) = sscanf($preNameParts[8], '%%%d=%d');
+                $weeks = array(
+                    'expression' => $preNameParts[8],
+                    'interval' => $weekInterval,
+                    'remainder' => $weekRemainder,
+                    'matches' => $this->week % $weekInterval === $weekRemainder
+                );
+            }
+            /* week of month (wom) */
+            else {
+                $dow_by_wom = array();
+                $dows = explode(',', $cron['dow']);
+                $woms = explode(',', $preNameParts[8]);
+                foreach ($dows as $dow) {
+                    foreach ($woms as $wom) {
+                        $dow_by_wom[] = $dow . '#' . $wom;
+                    }
+                }
+                $cron['dow'] = join(',', $dow_by_wom);
+            }
 
-            if ($cronExpression->isDue() && $weeks['matches']) {
+            $cronExpression = \Cron\CronExpression::factory(join(' ', $cron));
+            if ($cronExpression->isDue() && array_key_exists('matches', $weeks) && $weeks['matches']) {
                 $cron['due'] = true;
                 $cron['date'] = $cronExpression->getPreviousRunDate('now', 0, true);
             }
             else {
                 $cron['due'] = false;
-                $nextValidWeek = $weekInterval*(floor($this->week / $weekInterval)) + $weekRemainder;
-                if ($nextValidWeek < $this->week) {
-                    $nextValidWeek += $weekInterval; // e. g. %4=0 in week 45 would return 44
-                }
-                if ($nextValidWeek <= 52) {
-                    $date = new \DateTime();
-                    $date->setISODate($this->year, $nextValidWeek);
+                if (isset($weekInterval)) {
+                    $nextValidWeek = $weekInterval*(floor($this->week / $weekInterval)) + $weekRemainder;
+                    if ($nextValidWeek < $this->week) {
+                        $nextValidWeek += $weekInterval; // e. g. %4=0 in week 45 would return 44
+                    }
+                    if ($nextValidWeek <= 52) {
+                        $date = new \DateTime();
+                        $date->setISODate($this->year, $nextValidWeek);
+                    }
+                    else {
+                        $date = new \DateTime();
+                        $date->setISODate($this->year + 1, $nextValidWeek - 52);
+
+                    }
                 }
                 else {
                     $date = new \DateTime();
-                    $date->setISODate($this->year + 1, $nextValidWeek - 52);
-
+                    $date->setISODate($this->year, $this->week);
                 }
                 $cron['date'] = $cronExpression->getNextRunDate($date);
+
+                echo $cron['date']->format('d. m. Y'), PHP_EOL;
             }
 
             $cron['weeks'] = $weeks;

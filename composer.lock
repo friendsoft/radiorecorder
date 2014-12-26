@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b46d3f3a275c57826553c46595e7bf5b",
+    "hash": "73cc2161064a79a6b230a853123f19ca",
     "packages": [
         {
             "name": "friendsoft/radiobroadcasts",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tqmz/radiobroadcasts.git",
-                "reference": "0f8469ad7a15b2cd24c2215d9891956874218ab4"
+                "reference": "df7826e00f7b0e47d5e494ff3c66b9fd20ac3ba8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tqmz/radiobroadcasts/zipball/0f8469ad7a15b2cd24c2215d9891956874218ab4",
-                "reference": "0f8469ad7a15b2cd24c2215d9891956874218ab4",
+                "url": "https://api.github.com/repos/tqmz/radiobroadcasts/zipball/df7826e00f7b0e47d5e494ff3c66b9fd20ac3ba8",
+                "reference": "df7826e00f7b0e47d5e494ff3c66b9fd20ac3ba8",
                 "shasum": ""
             },
             "type": "library",
@@ -25,24 +25,27 @@
             "support": {
                 "source": "https://github.com/tqmz/radiobroadcasts/tree/master"
             },
-            "time": "2014-12-16 21:55:43"
+            "time": "2014-12-26 23:08:11"
         },
         {
             "name": "mtdowling/cron-expression",
-            "version": "v1.0.3",
+            "version": "dev-github-issue-70--fix-multiple-dow-with-wom-validation",
             "source": {
                 "type": "git",
-                "url": "https://github.com/mtdowling/cron-expression.git",
-                "reference": "a47ac8d5ec15049013792401af5a4d13e3dbe7f6"
+                "url": "https://github.com/tqmz/cron-expression.git",
+                "reference": "b2d4967895aed4f1d951ae5fd399cb3289521ec3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mtdowling/cron-expression/zipball/a47ac8d5ec15049013792401af5a4d13e3dbe7f6",
-                "reference": "a47ac8d5ec15049013792401af5a4d13e3dbe7f6",
+                "url": "https://api.github.com/repos/tqmz/cron-expression/zipball/b2d4967895aed4f1d951ae5fd399cb3289521ec3",
+                "reference": "b2d4967895aed4f1d951ae5fd399cb3289521ec3",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*"
             },
             "type": "library",
             "autoload": {
@@ -50,7 +53,6 @@
                     "Cron": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -66,7 +68,10 @@
                 "cron",
                 "schedule"
             ],
-            "time": "2013-11-23 19:48:39"
+            "support": {
+                "source": "https://github.com/tqmz/cron-expression/tree/github-issue-70--fix-multiple-dow-with-wom-validation"
+            },
+            "time": "2014-12-26 22:50:02"
         },
         {
             "name": "phansys/getid3",
@@ -114,18 +119,113 @@
             "time": "2014-10-08 19:39:42"
         },
         {
+            "name": "symfony/config",
+            "version": "dev-master",
+            "target-dir": "Symfony/Component/Config",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/Config.git",
+                "reference": "35b07adb6baa7368939cc751642543343e92ebc4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/Config/zipball/35b07adb6baa7368939cc751642543343e92ebc4",
+                "reference": "35b07adb6baa7368939cc751642543343e92ebc4",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3",
+                "symfony/filesystem": "~2.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\Config\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                }
+            ],
+            "description": "Symfony Config Component",
+            "homepage": "http://symfony.com",
+            "time": "2014-12-23 17:36:41"
+        },
+        {
+            "name": "symfony/filesystem",
+            "version": "v2.6.1",
+            "target-dir": "Symfony/Component/Filesystem",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/Filesystem.git",
+                "reference": "ff6efc95256cb33031933729e68b01d720b5436b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/Filesystem/zipball/ff6efc95256cb33031933729e68b01d720b5436b",
+                "reference": "ff6efc95256cb33031933729e68b01d720b5436b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.6-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\Filesystem\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                }
+            ],
+            "description": "Symfony Filesystem Component",
+            "homepage": "http://symfony.com",
+            "time": "2014-12-02 20:19:20"
+        },
+        {
             "name": "symfony/process",
             "version": "2.6.x-dev",
             "target-dir": "Symfony/Component/Process",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Process.git",
-                "reference": "10a896e667e48bc0b895baa83cb77abcb29c51b6"
+                "reference": "931dccf6c946c28e2d3386eca686b4c6164dee22"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Process/zipball/10a896e667e48bc0b895baa83cb77abcb29c51b6",
-                "reference": "10a896e667e48bc0b895baa83cb77abcb29c51b6",
+                "url": "https://api.github.com/repos/symfony/Process/zipball/931dccf6c946c28e2d3386eca686b4c6164dee22",
+                "reference": "931dccf6c946c28e2d3386eca686b4c6164dee22",
                 "shasum": ""
             },
             "require": {
@@ -158,15 +258,24 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "http://symfony.com",
-            "time": "2014-12-12 16:21:40"
+            "time": "2014-12-22 16:44:09"
         }
     ],
     "packages-dev": [],
-    "aliases": [],
+    "aliases": [
+        {
+            "alias": "dev-master",
+            "alias_normalized": "9999999-dev",
+            "version": "dev-github-issue-70--fix-multiple-dow-with-wom-validation",
+            "package": "mtdowling/cron-expression"
+        }
+    ],
     "minimum-stability": "stable",
     "stability-flags": {
         "friendsoft/radiobroadcasts": 20,
+        "mtdowling/cron-expression": 20,
         "phansys/getid3": 20,
+        "symfony/config": 20,
         "symfony/process": 20
     },
     "prefer-stable": false,

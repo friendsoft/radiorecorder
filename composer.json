@@ -5,12 +5,17 @@
         {
             "type": "vcs",
             "url": "git@github.com:tqmz/radiobroadcasts.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:tqmz/cron-expression.git"
         }
     ],
     "require": {
         "friendsoft/radiobroadcasts": "dev-master",
-        "mtdowling/cron-expression": "1.0.*",
+        "mtdowling/cron-expression": "dev-github-issue-70--fix-multiple-dow-with-wom-validation as dev-master",
         "phansys/getid3": "2.1.*@dev",
+        "symfony/config": "3.0.*@dev",
         "symfony/process": "2.6.*@dev"
     }
 }
