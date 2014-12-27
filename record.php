@@ -36,9 +36,13 @@ class Radiorecorder {
     protected $records = array();
     protected $program; // array of records, associated by next due date: date => array(records)
 
+    protected $currentTime;
+
     public function __construct() {
-        $this->year = date('Y');
-        $this->week = date('W');
+        $this->currentTime = new \DateTime('now'); // overwrite for testing (TODO make cli option)
+        //$this->currentTime = new \DateTime('2014-12-27 19:00'); // overwrite for testing (TODO make cli option)
+        $this->year = $this->currentTime->format('Y');
+        $this->week = $this->currentTime->format('W');
         $this->stationsFile = __DIR__.'/config/stations';
         $this->stationsDistDir = __DIR__.'/vendor/friendsoft/radiobroadcasts/stations.dist';
         $this->broadcastsFile = __DIR__.'/config/broadcasts';
@@ -173,9 +177,9 @@ class Radiorecorder {
             }
 
             $cronExpression = \Cron\CronExpression::factory(join(' ', $cron));
-            if ($cronExpression->isDue() && array_key_exists('matches', $weeks) && $weeks['matches']) {
+            if ($cronExpression->isDue($this->currentTime) && array_key_exists('matches', $weeks) && $weeks['matches']) {
                 $cron['due'] = true;
-                $cron['date'] = $cronExpression->getPreviousRunDate('now', 0, true);
+                $cron['date'] = $cronExpression->getPreviousRunDate($this->currentTime, 0, true);
             }
             else {
                 $cron['due'] = false;
@@ -200,7 +204,7 @@ class Radiorecorder {
                 }
                 $cron['date'] = $cronExpression->getNextRunDate($date);
 
-                echo $cron['date']->format('d. m. Y'), PHP_EOL;
+                //echo $cron['date']->format('d. m. Y'), PHP_EOL;
             }
 
             $cron['weeks'] = $weeks;
@@ -275,6 +279,19 @@ class Radiorecorder {
 
 
     public function processRecords() {
+        // TODO bootstrap
+        $success = function($buffer) { /*echo '.'; */ };
+        $failure = function($buffer) { echo 'ERROR: ' . $buffer; };
+
+        // TODO retrieve stream format, e. g. ogg/vorbis for mephisto976, tag accordingly
+        // http://stackoverflow.com/questions/23287341/how-to-get-mime-type-of-a-file-in-php-5-5/23287361#23287361
+
+        $writer = new \GetId3\Write\Tags();
+        $writer->tagformats = array('id3v2.3');
+        $writer->tag_encoding = 'UTF-8';
+
+        $streamrippers = array();
+
         // TODO cache that stuff
         foreach ($this->records as $request) {
             $record = array(
@@ -283,71 +300,69 @@ class Radiorecorder {
                 'comment' => $request['comment']
             );
             /* BEGINN ALL DUE RECORDINGS, THEN WAIT ON FINISHED RECORDS TO TAG THEM */
-            $streamrippers = array();
             foreach ($record['broadcast']['cron'] as $cron) {
                 if (/*'Radia' === $record['broadcast']['name'] ||*/ $cron['due']) {
                     // TODO make class property $this->streamrippers
+                    echo 'DUE: ' . $record['broadcast']['name'], PHP_EOL;
+                    //var_dump($cron);
                     $record['active-cron'] = $cron;
-                    $streamrippers[] = $this->record($record);
+                    $proceed = function($file, $suceeded) use ($writer, $record) {
+                        // TODO mp3 conversion of aac files
+                        //echo PHP_EOL, $suceeded ? 'DONE' : 'FAIL', ': ', $file, PHP_EOL;
+                        $writer->filename = $file;
+                        $writer->tag_data = array(
+                            'ARTIST' => array($record['station']['name']),
+                            'TITLE' => array(sprintf('%s: %s/%s/%s',
+                                $record['broadcast']['name'],
+                                $record['active-cron']['date']->format('d'),
+                                $record['active-cron']['date']->format('m'),
+                                $record['active-cron']['date']->format('Y')
+                            )),
+                            'ALBUM' => array($record['broadcast']['name']),
+                            'YEAR' => array($record['active-cron']['date']->format('Y')),
+                            'COMMENT' => array('' ?: 'Radiorecorder 2014'),
+                            'GENRE' => array(isset($record['broadcast']['tags'][0]) ? ucfirst(strtolower($record['broadcast']['tags'][0])) : '')
+                        );
+                        if (!$writer->WriteTags()) {
+                            echo 'Tags not written!', PHP_EOL; // TODO handle failure
+                        };
+                        if ($writer->errors) {
+                            var_dump('errors: ', $writer->errors); // TODO handle failure
+                        };
+                        if ($writer->warnings) {
+                            var_dump('warnings: ', $writer->warnings); // TODO handle failure
+                        };
+                    };
+                    $streamripper = $this->record($record);
+                    // index by duration to ensure shortest broadcast are proceeded first
+                    $streamrippers[$streamripper->getDuration()][] = array(
+                        'instance' => $streamripper,
+                        'proceed' => $proceed
+                    );
+                    echo 'RECORDING STARTED', PHP_EOL;
                 }
                 $this->program[$record['station']['name']][$cron['date']->format('U')][] =
                     array('cron' => $cron, 'record' => $record);
             }
+        }
 
-            $success = function($buffer) { /*echo '.'; */ };
-            $failure = function($buffer) { echo 'ERROR: ' . $buffer; };
-
-            // TODO retrieve stream format, e. g. ogg/vorbis for mephisto976, tag accordingly
-            // http://stackoverflow.com/questions/23287341/how-to-get-mime-type-of-a-file-in-php-5-5/23287361#23287361
-
-            $writer = new \GetId3\Write\Tags();
-            $writer->tagformats = array('id3v2.3');
-            $writer->tag_encoding = 'UTF-8';
-
-            $proceed = function($file, $suceeded) use ($writer, $record) {
-                // TODO mp3 conversion of aac files
-                //echo PHP_EOL, $suceeded ? 'DONE' : 'FAIL', ': ', $file, PHP_EOL;
-                $writer->filename = $file;
-                $writer->tag_data = array(
-                    'ARTIST' => array($record['station']['name']),
-                    'TITLE' => array(sprintf('%s: %s/%s/%s',
-                        $record['broadcast']['name'],
-                        $record['active-cron']['date']->format('d'),
-                        $record['active-cron']['date']->format('m'),
-                        $record['active-cron']['date']->format('Y')
-                    )),
-                    'ALBUM' => array($record['broadcast']['name']),
-                    'YEAR' => array($record['active-cron']['date']->format('Y')),
-                    'COMMENT' => array('' ?: 'Radiorecorder 2014'),
-                    'GENRE' => array(isset($record['broadcast']['tags'][0]) ? ucfirst(strtolower($record['broadcast']['tags'][0])) : '')
-                );
-                if (!$writer->WriteTags()) {
-                    echo 'Tags not written!', PHP_EOL; // TODO handle failure
-                };
-                if ($writer->errors) {
-                    var_dump('errors: ', $writer->errors); // TODO handle failure
-                };
-                if ($writer->warnings) {
-                    var_dump('warnings: ', $writer->warnings); // TODO handle failure
-                };
-            };
-
-            foreach ($streamrippers as $streamripper) {
-                $streamripper->waitAndProceed($success, $failure, $proceed);
+        // call wait and proceedures only after each recording has been started
+        ksort($streamrippers);
+        foreach ($streamrippers as $duration => $streamrippers_dur) {
+            foreach ($streamrippers_dur as $streamripper) {
+                $streamripper['instance']->waitAndProceed($success, $failure, $streamripper['proceed']);
             }
-
-
         }
     }
 
     public function record($record) {
         $file = $this->generateBroadcastFileName($record);
-        echo $file, PHP_EOL;
+        echo 'RECORD: ', $file, PHP_EOL;
         $streamripper = new Streamripper(); // TODO inject, implement
         $streamripper
             ->setUrl($record['station']['url'])
             ->setDuration($record['broadcast']['minutes'] * 60)
-            //->setDuration(2) // for testing only
+            //->setDuration(rand(7,14)) // for testing only, in seconds
             ->setFile($file)
             ->rip()
         ;

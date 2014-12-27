@@ -90,23 +90,31 @@ class Streamripper {
             $this->getFile()
         );
 
+        echo 'COMMAND: ' . $command, PHP_EOL;
+        echo 'START RIPPING IN OWN PROCESS – ' . date('r'), PHP_EOL;
         $this->setProcess(new Process($command));
         $this->getProcess()
             ->setTimeout($this->getDuration() + 60)
             ->start()
             ;
+        echo 'END RIP CALL – ' . date('r'), PHP_EOL;
 
         return $this;
     }
 
     public function waitAndProceed(Callable $success, Callable $failure, Callable $proceed) {
+        echo 'WAIT AND PROCEED DEFINITION: ' . $this->getFile(), PHP_EOL;
         if (!$this->getProcess()) {
             throw new \BadMethodCallException('No process found, call ::rip() first');
         }
         $this->getProcess()->wait(function ($type, $buffer) use ($success, $failure) {
+            echo (Process::ERR === $type ? 'F' : '.');
             call_user_func(Process::ERR === $type ? $failure : $success, $buffer);
         });
+
+        echo PHP_EOL, 'PROCEED: ' . $this->getFile() . ' – ' . ($this->getProcess()->isSuccessful() ? 'SUCCESS' : 'ERROR'), PHP_EOL;
         call_user_func($proceed, $this->getFile(), $this->getProcess()->isSuccessful());
+        echo 'PROCEED: ' . $this->getFile() . ' – END', PHP_EOL;
 
         return $this;
     }
