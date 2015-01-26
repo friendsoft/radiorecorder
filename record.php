@@ -379,7 +379,7 @@ class Radiorecorder {
     }
 
     public function printProgram($week = null) {
-        if ((int) date('i') !== 0) {
+        if ((int) $this->currentTime->format('i') !== 0) {
             return;
         }
         $week = $week ?: $this->week;
