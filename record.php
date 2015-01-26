@@ -177,7 +177,7 @@ class Radiorecorder {
             }
 
             $cronExpression = \Cron\CronExpression::factory(join(' ', $cron));
-            if ($cronExpression->isDue($this->currentTime) && array_key_exists('matches', $weeks) && $weeks['matches']) {
+            if ($cronExpression->isDue($this->currentTime) && (!array_key_exists('matches', $weeks) || $weeks['matches'])) {
                 $cron['due'] = true;
                 $cron['date'] = $cronExpression->getPreviousRunDate($this->currentTime, 0, true);
             }
