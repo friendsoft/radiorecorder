@@ -16,6 +16,12 @@
         "mtdowling/cron-expression": "dev-github-issue-70--fix-multiple-dow-with-wom-validation as dev-master",
         "phansys/getid3": "2.1.*@dev",
         "symfony/config": "3.0.*@dev",
-        "symfony/process": "2.6.*@dev"
+        "symfony/process": "2.6.*@dev",
+        "mnapoli/silly-php-di": "^1.2"
+    },
+    "autoload": {
+      "psr-4": {
+        "Friendsoft\\Radiorecorder\\": "src"
+      }
     }
 }
