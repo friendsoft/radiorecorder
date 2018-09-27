@@ -1,0 +1,22 @@
+#!/usr/bin/env php
+<?php
+
+use Friendsoft\Radiorecorder\Console\RecordConsoleCommand;
+use Silly\Edition\PhpDi\Application;
+
+$container = include __DIR__ . '/app/bootstrap.php';
+
+$app = new Application('Friendsoft Radiorecorder', 'master-dev', $container);
+
+$app->command('record [target]', RecordConsoleCommand::class)
+    ->descriptions('Records scheduled radio broadcasts.', [
+        'target' => 'Target directory for storing recorded broadcasts.'
+    ])
+    ->defaults([
+        'target' => $container->get('target')
+    ])
+    ;
+
+$app->run();
+
+

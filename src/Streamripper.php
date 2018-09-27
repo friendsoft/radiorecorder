@@ -1,6 +1,6 @@
 <?php
 
-namespace Streamripper;
+namespace Friendsoft\Radiorecorder;
 
 use Symfony\Component\Process\Process;
 

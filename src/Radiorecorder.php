@@ -1,11 +1,8 @@
 <?php
 
-namespace Radiorecorder;
+namespace Friendsoft\Radiorecorder;
 
-use Streamripper\Streamripper;
-
-require_once(__DIR__.'/vendor/autoload.php');
-require_once(__DIR__.'/Streamripper.php'); // TODO resolve via component (use as vendor with composer)
+use Friendsoft\Radiorecorder\Streamripper;
 
 /**
  * Radiorecorder
@@ -38,18 +35,18 @@ class Radiorecorder {
 
     protected $currentTime;
 
-    public function __construct() {
+    public function __construct($target) {
         $this->currentTime = new \DateTime('now'); // overwrite for testing (TODO make cli option)
         //$this->currentTime = new \DateTime('2014-12-27 19:00'); // overwrite for testing (TODO make cli option)
         $this->year = $this->currentTime->format('Y');
         $this->week = $this->currentTime->format('W');
-        $this->stationsFile = __DIR__.'/config/stations';
-        $this->stationsDistDir = __DIR__.'/vendor/friendsoft/radiobroadcasts/stations.dist';
-        $this->broadcastsFile = __DIR__.'/config/broadcasts';
-        $this->broadcastsDistDir = __DIR__.'/vendor/friendsoft/radiobroadcasts/broadcasts.dist';
-        $this->recordsFile = __DIR__.'/config/record';
-        $this->recordsDistDir = __DIR__.'/vendor/friendsoft/radiobroadcasts/record.dist';
-        $this->recordFileNamePattern = '/data/media/Musik/radiorecorder/%STATION%/%STATION%--%BROADCASTNAME%--%YEAR%-%MONTH%-%DAY%.%FORMAT%'; // TODO resolve using config file
+        $this->stationsFile = __DIR__.'/../config/stations';
+        $this->stationsDistDir = __DIR__.'/../vendor/friendsoft/radiobroadcasts/stations.dist';
+        $this->broadcastsFile = __DIR__.'/../config/broadcasts';
+        $this->broadcastsDistDir = __DIR__.'/../vendor/friendsoft/radiobroadcasts/broadcasts.dist';
+        $this->recordsFile = __DIR__.'/../config/record';
+        $this->recordsDistDir = __DIR__.'/../vendor/friendsoft/radiobroadcasts/record.dist';
+        $this->recordFileNamePattern = $target . '/%STATION%/%STATION%--%BROADCASTNAME%--%YEAR%-%MONTH%-%DAY%.%FORMAT%'; // TODO resolve using config file
         $this->parseStations($this->stationsDistDir);
         $this->parseStations($this->stationsFile);
         $this->parseBroadcasts($this->broadcastsDistDir);
@@ -410,9 +407,3 @@ class Radiorecorder {
     }
 }
 
-$radiorecorder = new Radiorecorder();
-if (!file_exists($radiorecorder->recordsFile)) {
-    throw new \InvalidArgumentException('Record file "' . $radiorecorder->recordsFile . '" not found – please create and refer a file like https://github.com/friendsoft/radiobroadcasts/blob/master/record.dist/record.dist, with un-commented lines of stations and broadcasts.');
-}
-$radiorecorder->processRecords(); // generate program, record broadcasts that are due
-$radiorecorder->printProgram();
