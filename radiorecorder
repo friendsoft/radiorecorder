@@ -8,12 +8,14 @@ $container = include __DIR__ . '/app/bootstrap.php';
 
 $app = new Application('Friendsoft Radiorecorder', 'master-dev', $container);
 
-$app->command('record [target]', RecordConsoleCommand::class)
+$app->command('record [target] [--now=]', RecordConsoleCommand::class)
     ->descriptions('Records scheduled radio broadcasts.', [
-        'target' => 'Target directory for storing recorded broadcasts.'
+        'target' => 'Target directory for storing recorded broadcasts.',
+        '--now' => 'Time (Y-m-d H:i) to use instead of current time (for testing).'
     ])
     ->defaults([
-        'target' => $container->get('target')
+        'target' => $container->get('target'),
+        'now' => $container->get('now')->format('Y-m-d H:i')
     ])
     ;
 

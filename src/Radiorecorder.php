@@ -3,6 +3,7 @@
 namespace Friendsoft\Radiorecorder;
 
 use Friendsoft\Radiorecorder\Streamripper;
+use DateTime;
 
 /**
  * Radiorecorder
@@ -35,11 +36,8 @@ class Radiorecorder {
 
     protected $currentTime;
 
-    public function __construct($target) {
-        $this->currentTime = new \DateTime('now'); // overwrite for testing (TODO make cli option)
-        //$this->currentTime = new \DateTime('2014-12-27 19:00'); // overwrite for testing (TODO make cli option)
-        $this->year = $this->currentTime->format('Y');
-        $this->week = $this->currentTime->format('W');
+    public function __construct($target, DateTime $now = null) {
+        $this->setNow($now ?: new DateTime('now'));
         $this->stationsFile = __DIR__.'/../config/stations';
         $this->stationsDistDir = __DIR__.'/../vendor/friendsoft/radiobroadcasts/stations.dist';
         $this->broadcastsFile = __DIR__.'/../config/broadcasts';
@@ -47,6 +45,17 @@ class Radiorecorder {
         $this->recordsFile = __DIR__.'/../config/record';
         $this->recordsDistDir = __DIR__.'/../vendor/friendsoft/radiobroadcasts/record.dist';
         $this->recordFileNamePattern = $target . '/%STATION%/%STATION%--%BROADCASTNAME%--%YEAR%-%MONTH%-%DAY%.%FORMAT%'; // TODO resolve using config file
+    }
+
+
+    public function setNow(DateTime $now) {
+        $this->currentTime = $now;
+        $this->year = $this->currentTime->format('Y');
+        $this->week = $this->currentTime->format('W');
+    }
+
+    public function parse()
+    {
         $this->parseStations($this->stationsDistDir);
         $this->parseStations($this->stationsFile);
         $this->parseBroadcasts($this->broadcastsDistDir);

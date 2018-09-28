@@ -10,9 +10,12 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $definitions = [
     /* options */
     'target' => env('RADIORECORDER_TARGET_DIR', sys_get_temp_dir()),
+    'now' => new DateTime('now'),
 
     /* services */
-    Radiorecorder::class => autowire()->constructorParameter('target', get('target')),
+    Radiorecorder::class => autowire()
+    ->constructorParameter('target', get('target'))
+    ->constructorParameter('now', get('now'))
 ];
 
 $builder = new \DI\ContainerBuilder();
